@@ -1,6 +1,23 @@
 <?php
+/**
+ * モジュールプラグイン
+ *
+ * @package     bora-jum
+ * @author      Original Author <k-tanaka@netcombb.co.jp>
+ * @copyright   Copyright (c) 2013 NetComBB
+ */
+
 Class Plugin extends PluginAbstract
 {
+    /**{{{ preProcess()
+     *
+     * アクション実行前共通処理
+     *
+     * @access  public
+     * @param   (none)
+     * @return  void
+     * @author  k-tanaka@netcombb.co.jp
+     */
     public function preProcess()
     {
         $this->view->addJs('jquery-1.5.2.min.js');
@@ -10,13 +27,24 @@ Class Plugin extends PluginAbstract
 
         $this->view->site_title = '備品管理';
 
-        $user_id = 1;
+        $user_id = 0;
         $Users = $this->model('Users');
         $this->view->user_name = $Users->getUserName($user_id);
 
         $this->addBreadcrumb($this->view->site_title, '/');
     }
+    //}}}
 
+    /**{{{ addBreadcrub()
+     *
+     * パンくずリスト用配列に要素を追加
+     *
+     * @access  public
+     * @param   string  $title
+     * @param   string  $url
+     * @return  bool
+     * @author  k-tanaka@netcombb.co.jp
+     */
     public function addBreadcrumb($title = '', $url = '')
     {
         if (is_null($title) || $title === '') {
@@ -33,19 +61,6 @@ Class Plugin extends PluginAbstract
 
         return true;
     }
-
-    public function setIndexBreadcrumb()
-    {
-        if (is_null($this->view->breadcrumbs)) {
-            return false;
-        }
-
-        $breadcrumbs = $this->view->breadcrumbs;
-        $breadcrumbs[count($breadcrumbs) - 1]['url'] = '';
-
-        $this->view->breadcrumbs = $breadcrumbs;
-
-        return true;
-    }
+    //}}}
 }
 ?>

@@ -1,22 +1,21 @@
 <?php
+/**
+ * フォームのカスタムレイアウト
+ *
+ * @package     bora-jum
+ * @author      Original Author <k-tanaka@netcombb.co.jp>
+ * @copyright   Copyright (c) 2013 NetComBB
+ */
 
 /**
  * @see FormLayoutAbstract
  */
 require_once 'html/form_layout_abstract.php';
 
-/**
- * FormLayoutDiv
- *
- * @category   Curry
- * @package    html
- * @copyright  Copyright (c) 2013 NetComBB
- * @license    MIT License
- */
 class FormLayoutCustomSubmit extends FormLayoutAbstract
 {
+    // Properties
     protected $_tagName = 'footer';
-
     protected $_sub_container;
 
     public function __construct(HtmlForm $form)
@@ -27,12 +26,6 @@ class FormLayoutCustomSubmit extends FormLayoutAbstract
         parent::__construct($form);
     }
 
-    /**
-     * Add element of container that contains form element and caption
-     * 
-     * @param HtmlElement $inputContainer
-     * @param HtmlElement $captionContainer
-     */
     protected function addFormElementContainer(HtmlElement $inputContainer, HtmlElement $captionContainer)
     {
         $this->_sub_container->addElement($inputContainer);

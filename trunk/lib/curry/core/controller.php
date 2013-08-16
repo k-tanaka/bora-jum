@@ -214,7 +214,7 @@ class Controller extends CurryClass
 			$this->session->remove('errors');
 		}		
 		if ($this->autoValidate == true) {
-			$this->vilidateRequest();		
+			$this->validateRequest();		
 			$this->session->back_action = $this->request->getAction();
 		}
 	}
@@ -224,7 +224,7 @@ class Controller extends CurryClass
 	 *
 	 * @return void
 	 */
-	protected function vilidateRequest()
+	protected function validateRequest()
 	{
 		if (array_key_exists($this->action, $this->validateRules)) {
 			$args = array_merge($this->post, $this->query);

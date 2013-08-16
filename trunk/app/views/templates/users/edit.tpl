@@ -4,7 +4,6 @@
     <table class="erros">
         {if isset($errors.name)}<tr><td>ログインID</td><td>：</td><td>{$errors.name}</td></tr>{/if}
         {if isset($errors.display)}<tr><td>表示名</td><td>：</td><td>{$errors.display}</td></tr>{/if}
-        {if isset($errors.password)}<tr><td>パスワード</td><td>：</td><td>{$errors.password}</td></tr>{/if}
     </table>
 </h4>
 {/if}

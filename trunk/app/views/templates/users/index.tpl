@@ -7,7 +7,7 @@
             <tr>
                 <th>ID</th>
                 <th>ログインID</th>
-                <th>表示</th>
+                <th>ユーザ名</th>
                 <th>更新日時</th>
                 <th>操作</th>
             </tr>
@@ -20,8 +20,9 @@
                 <td>{$user.display}</td>
                 <td>{$user.updated_at}</td>
                 <td>
-                    <input type="image" src="/images/icn_edit.png" title="変更">
-                    <input type="image" src="/images/icn_trash.png" title="削除">
+                    <a href="/users/edit/{$user.id}/"><input type="image" src="/images/icn_edit.png" title="変更"></a>
+                    <a href="/users/edit_password/{$user.id}/"><input type="image" src="/images/icn_security.png" title="パスワード変更"></a>
+                    <a href="/users/delete/{$user.id}/" onClick="return confirm('ユーザ：{$user.display} を削除しますか?');"><input type="image" src="/images/icn_trash.png" title="削除"></a>
                 </td> 
             </tr>
 {/foreach}
