@@ -1,15 +1,15 @@
 <?php
 /**
- * equipment_typesテーブルモデルクラス
+ * equipmentsテーブルモデルクラス
  *
  * @package     bora-jum
  * @author      Original Author <k-tanaka@netcombb.co.jp>
  * @copyright   Copyright (c) 2013 NetComBB
  */
 
-Class EquipmentTypes extends Model
+Class Equipments extends Model
 {
-    /**{{{ getTypes()
+    /**{{{ getEquipments()
      *
      * すべてのレコードを取得
      *
@@ -18,7 +18,7 @@ Class EquipmentTypes extends Model
      * @return  array
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function getTypes()
+    public function getEquipments()
     {
         $select = $this->select();
         $select->order('id ASC');
@@ -27,7 +27,7 @@ Class EquipmentTypes extends Model
         return $rows;
     }
     //}}}
-    /**{{{ getType()
+    /**{{{ getEquipment()
      *
      * IDを指定してレコードを取得
      *
@@ -36,7 +36,7 @@ Class EquipmentTypes extends Model
      * @return  array
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function getType($id)
+    public function getEquipment($id)
     {
         $select = $this->select();
         $select->where('id', $id);
@@ -45,32 +45,7 @@ Class EquipmentTypes extends Model
        return $row; 
     }
     //}}}
-    /**{{{ getTypeList()
-     *
-     * 備品種別名のリストを取得
-     *
-     * @access  public
-     * @param   (none)
-     * @return  array
-     * @author  k-tanaka@netcombb.co.jp
-     */
-    public function getTypeList()
-    {
-        $select = $this->select();
-        $select->fields('id, name');
-        $select->order('id ASC');
-        $rows = $select->fetchAll();
-
-        $ret = array();
-
-        foreach ($rows as $row) {
-            $ret[$row['id']] = $row['name'];
-        }
-
-        return $ret;
-    }
-    //}}}
-    /**{{{ countTypes()
+    /**{{{ countEquipments()
      *
      * レコード数をカウントする
      *
@@ -79,7 +54,7 @@ Class EquipmentTypes extends Model
      * @return  int
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function countTypes()
+    public function countEquipments()
     {
         $select = $this->select();
         $select->order('id ASC');
@@ -88,7 +63,7 @@ Class EquipmentTypes extends Model
         return $count;
     }
     //}}}
-    /**{{{ addType()
+    /**{{{ addEquipment()
      *
      * レコードを追加する
      *
@@ -97,7 +72,7 @@ Class EquipmentTypes extends Model
      * @return  void
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function addType($datas)
+    public function addEquipment($datas)
     {
         $id = $this->select()->fetchMax('id');
 
@@ -105,13 +80,15 @@ Class EquipmentTypes extends Model
 
         $insert->values('id', $id + 1);
         $insert->values('name', $datas['name']);
+        $insert->values('type', $datas['type']);
+        $insert->values('quantity', $datas['quantity']);
         $insert->values('created_at', date('Y/m/d H:i:s', time()));
         $insert->values('updated_at', date('Y/m/d H:i:s', time()));
 
         $result = $insert->execute();
     }
     //}}}
-    /**{{{ updateType()
+    /**{{{ updateEquipment()
      *
      * レコードを変更する
      *
@@ -120,10 +97,10 @@ Class EquipmentTypes extends Model
      * @return  void
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function updateType($datas)
+    public function updateEquipment($datas)
     {
         $vals = array();
-        $user = $this->getType($datas['id']);
+        $user = $this->getEquipment($datas['id']);
 
         foreach ($datas as $key => $val) {
             if (isset($user[$key]) && $val !== $user[$key]) {
@@ -146,7 +123,7 @@ Class EquipmentTypes extends Model
         return true;
     }
     //}}}
-    /**{{{ deleteType()
+    /**{{{ deleteEquipment()
      *
      * レコードを削除する
      *
@@ -155,7 +132,7 @@ Class EquipmentTypes extends Model
      * @return  void
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function deleteType($id)
+    public function deleteEquipment($id)
     {
         $reuslt = $this->delete()->where('id', $id)->execute();
     }

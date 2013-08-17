@@ -8,7 +8,7 @@
 {/if}
 <article class="module width_half">
     <header><h3>{$page_title}</h3></header>
-    <div class="module_content"><h4>ユーザ名： {$user.display}</h4></div>
+    <div class="module_content"><h4>ユーザ名： {$user.name}</h4></div>
 
 {$form->render()}
 

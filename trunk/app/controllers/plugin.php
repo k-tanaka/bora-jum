@@ -27,11 +27,27 @@ Class Plugin extends PluginAbstract
 
         $this->view->site_title = '備品管理';
 
-        $user_id = 0;
+        $user_id = 1;
         $Users = $this->model('Users');
         $this->view->user_name = $Users->getUserName($user_id);
 
         $this->addBreadcrumb($this->view->site_title, '/');
+    }
+    //}}}
+    /**{{{ postProcess()
+     *
+     * アクション実行後共通処理
+     *
+     * @access  public
+     * @param   (none)
+     * @return  void
+     * @author  k-tanaka@netcombb.co.jp
+     */
+    public function postProcess()
+    {
+        if (!is_null($this->view->page_title)) {
+            $this->addBreadcrumb($this->view->page_title, '');
+        }
     }
     //}}}
 

@@ -728,7 +728,7 @@ margin: 10px 0;
 fieldset label {
 display: block;
 float: left;
-width: 200px;
+width: 40%;
 height: 25px;
 line-height: 25px;
 text-shadow: 0 1px 0 #fff;
@@ -767,11 +767,6 @@ border: 1px solid #77BACE;
 box-shadow: inset 0 2px 2px #ccc, 0 0 10px #ADDCE6;
 }
 
-.width_half fieldset input[type=text],
-.width_half fieldset input[type=password] {
-width: 92%;
-}
-
 fieldset select {
 width: 96%;
 margin: 0 10px;
@@ -804,6 +799,31 @@ border: 1px solid #77BACE;
 -webkit-box-shadow: inset 0 2px 2px #ccc, 0 0 10px #ADDCE6;
 -moz-box-shadow: inset 0 2px 2px #ccc, 0 0 10px #ADDCE6;
 box-shadow: inset 0 2px 2px #ccc, 0 0 10px #ADDCE6;
+}
+
+.width_half fieldset input[type=text],
+.width_half fieldset input[type=password],
+.width_half fieldset select,
+.width_half fieldset textarea {
+width: 92%;
+}
+
+.width_quarter fieldset input[type=text],
+.width_quarter fieldset input[type=password],
+.width_quarter fieldset select,
+.width_quarter fieldset textarea {
+width: 86%;
+}
+
+fieldset input[type=text].shortbox,
+fieldset input[type=password].shortbox,
+fieldset textarea.shortbox {
+width: 20%;
+}
+
+fieldset select.shortbox {
+width: 40%;
+margin-top: 2px;
 }
 
 .submit_link {

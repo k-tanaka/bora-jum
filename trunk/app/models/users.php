@@ -1,6 +1,6 @@
 <?php
 /**
- * Usersテーブルモデルクラス
+ * usersテーブルモデルクラス
  *
  * @package     bora-jum
  * @author      Original Author <k-tanaka@netcombb.co.jp>
@@ -47,7 +47,7 @@ Class Users extends Model
     //}}}
     /**{{{ getUserByLoginID()
      *
-     * ログインID(users.name)を指定してレコードを取得
+     * ログインID(users.loginid)を指定してレコードを取得
      *
      * @access  public
      * @param   string  $loginid
@@ -57,7 +57,7 @@ Class Users extends Model
     public function getUserByLoginID($loginid)
     {
         $select = $this->select();
-        $select->where('name', $loginid);
+        $select->where('loginid', $loginid);
         $row = $select->fetchRow();
 
         return $row;
@@ -65,7 +65,7 @@ Class Users extends Model
     //}}}
     /**{{{ getUserName()
      *
-     * IDを指定してユーザ名(users.display)を取得
+     * IDを指定してユーザ名(users.name)を取得
      *
      * @access  public
      * @param   int     $id
@@ -76,12 +76,12 @@ Class Users extends Model
     {
         $user = $this->getUser($id);
 
-        return $user['display'];
+        return $user['name'];
     }
     //}}}
     /**{{{ getUserLoginID()
      *
-     * IDを指定してログインID(users.name)を取得
+     * IDを指定してログインID(users.loginid)を取得
      *
      * @access  public
      * @param   int     $id
@@ -92,12 +92,12 @@ Class Users extends Model
     {
         $user = $this->getUser($id);
 
-        return $user['name'];
+        return $user['loginid'];
     }
     //}}}
     /**{{{ isDuplicateLoginID()
      *
-     * ログインID(users.name)の重複を調べる
+     * ログインID(users.loginid)の重複を調べる
      *
      * @access  public
      * @param   string  $id
@@ -148,8 +148,8 @@ Class Users extends Model
         $insert = $this->insert();
 
         $insert->values('id', $id + 1);
+        $insert->values('loginid', $datas['loginid']);
         $insert->values('name', $datas['name']);
-        $insert->values('display', $datas['display']);
         $insert->values('password', hash('sha512', $datas['password']));
         $insert->values('created_at', date('Y/m/d H:i:s', time()));
         $insert->values('updated_at', date('Y/m/d H:i:s', time()));
