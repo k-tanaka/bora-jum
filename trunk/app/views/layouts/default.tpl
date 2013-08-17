@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>{$page_title} | {$section_title} | {$site_title}</title>
+    <title>{if !is_null($page_title)}{$page_title} | {/if}{if !is_null($section_title)}{$section_title} | {/if}{$site_title}</title>
 
 {foreach from=$stylesheets item=css}
     <link rel="stylesheet" type="text/css" href="{$request.base_path}/css/{$css}" />
@@ -58,12 +58,11 @@
             <li class="icn_view_users"><a href="/users/">ユーザ一覧</a></li>
             <li class="icn_profile"><a href="#">Your Profile</a></li>
         </ul>
-        <h3>Content</h3>
+        <h3>備品管理</h3>
         <ul class="toggle">
-            <li class="icn_new_article"><a href="#">New Article</a></li>
-            <li class="icn_edit_article"><a href="#">Edit Articles</a></li>
-            <li class="icn_categories"><a href="#">Categories</a></li>
-            <li class="icn_tags"><a href="#">Tags</a></li>
+            <li class="icn_new_article"><a href="/equips/add/">備品登録</a></li>
+            <li class="icn_categories"><a href="/equips/">備品一覧</a></li>
+            <li class="icn_tags"><a href="/equip_types/">備品種別一覧</a></li>
         </ul>
         <footer>
             <hr />

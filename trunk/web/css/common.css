@@ -400,6 +400,11 @@ width: 90%;
 float: left;
 }
 
+#main .module header .header_btns {
+    float: right;
+    margin: 5px 20px;
+}
+
 .module header {
 height: 38px;
 width: 100%;
