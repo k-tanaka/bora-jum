@@ -23,6 +23,7 @@ Class UsagesController extends Controller
             'quantity' => array(
                 array('rule' => 'required'),
                 array('rule' => 'number_string'),
+                array('rule' => 'usage_quantity'),
                 ),
             );
 
@@ -37,28 +38,14 @@ Class UsagesController extends Controller
      */
     public function preProcess()
     {
-        $this->view->section_title = '使用状況管理';
-        $this->plugin->addBreadcrumb($this->view->section_title, '/usages/');
+        $this->view->section_title = '備品管理';
+        $this->plugin->addBreadcrumb($this->view->section_title, '/equips/');
+
+        $this->view->equipment = $this->model('Equipments')->getEquipment($this->params['equipment_id']);
+        $this->plugin->addBreadcrumb($this->view->equipment['name'], '/equips/view/' . $this->params['equipment_id']);
     }
     //}}}
 
-    /**{{{ index()
-     *
-     * 使用状況一覧
-     *
-     * @access  public
-     * @param   (none)
-     * @return  void
-     * @author  k-tanaka@netcombb.co.jp
-     */
-    public function index()
-    {
-        $this->view->page_title = '使用状況一覧';
-        $this->view->usages = $this->model('Usages')->getUsages();
-        $this->view->equipment_list = $this->model('Equipments')->getEquipmentList();
-        $this->view->type_list  = $this->model('UsageTypes')->getTypeList();
-    }
-    //}}}
     /**{{{ add()
      *
      * 使用状況登録フォーム表示
@@ -72,7 +59,7 @@ Class UsagesController extends Controller
     {
         $this->view->page_title = '使用状況登録';
 
-        $this->view->form = $this->_getForm();
+        $this->view->form = $this->_getForm(array('equipment_id' => $this->view->equipment['id']));
     }
     //}}}
     /**{{{ create()
@@ -86,23 +73,24 @@ Class UsagesController extends Controller
      */
     public function create()
     {
-        Loader::loadLibrary('ValidatorEx');
+        $this->_valid_rules['quantity'][2]['all'] = $this->model('Equipments')->getQuantity($this->post['equipment_id']);
+        $this->_valid_rules['quantity'][2]['total'] = $this->model('Usages')->getTotalQuantity($this->post['equipment_id']);
+        $this->_valid_rules['quantity'][2]['is_new'] = true;
 
-        $validator = new ValidatorEx();
-        $validator->setRules($this->_valid_rules);
+        $this->validator->setRules($this->_valid_rules);
 
-        $valid = $validator->validate($this->post);
+        $valid = $this->validator->validate($this->post);
 
         if ($valid) {
             $this->model('Usages')->addUsage($this->post);
 
-            $this->redirect('/' . $this->request->getController() . '/');
+            $this->redirect('/equips/view/' . $this->post['equipment_id']);
         }
 
         $this->view->setTemplate('add');
 
         $this->view->page_title = '使用状況登録';
-        $this->view->errors = $validator->getError();
+        $this->view->errors = $this->validator->getError();
         $this->view->form = $this->_getForm($this->post);
     }
     //}}}
@@ -136,21 +124,25 @@ Class UsagesController extends Controller
     {
         Loader::loadLibrary('ValidatorEx');
 
-        $validator = new ValidatorEx();
-        $validator->setRules($this->_valid_rules);
+        $this->_valid_rules['quantity'][2]['all'] = $this->model('Equipments')->getQuantity($this->post['equipment_id']);
+        $this->_valid_rules['quantity'][2]['total'] = $this->model('Usages')->getTotalQuantity($this->post['equipment_id'], $this->post['id']);
+        $this->_valid_rules['quantity'][2]['is_new'] = false;
 
-        $valid = $validator->validate($this->post);
+        $this->validator = new ValidatorEx();
+        $this->validator->setRules($this->_valid_rules);
+
+        $valid = $this->validator->validate($this->post);
 
         if ($valid) {
             $this->model('Usages')->updateUsage($this->post);
 
-            $this->redirect('/' . $this->request->getController() . '/');
+            $this->redirect('/equips/view/' . $this->post['equipment_id']);
         }
 
         $this->view->setTemplate('edit');
 
         $this->view->page_title = '使用状況変更';
-        $this->view->errors = $validator->getError();
+        $this->view->errors = $this->validator->getError();
         $this->view->form = $this->_getForm($this->post, false);
     }
     //}}}
@@ -166,7 +158,7 @@ Class UsagesController extends Controller
     public function delete()
     {
         $this->model('Usages')->deleteUsage($this->params['id']);
-        $this->redirect('/' . $this->request->getController() . '/');
+        $this->redirect('/equips/view/' . $this->params['equipment_id']);
     }
     //}}}
 
@@ -194,14 +186,14 @@ Class UsagesController extends Controller
 
         $form = new HtmlForm();
         if ($is_new) {
-            $form->setAction('/' . $this->request->getController() . '/create/');
+            $form->setAction('/' . $this->request->getController() . '/create/' . $equipment_id . '/');
         }
         else {
-            $form->setAction('/' . $this->request->getController() . '/update/' . $vals['id']);
+            $form->setAction('/' . $this->request->getController() . '/update/' . $equipment_id .  '/ ' . $vals['id']);
             $form->addHidden('id')->setValue($vals['id']);
         }
+        $form->addHidden('equipment_id')->setValue($equipment_id);
         $layout1 = $form->addLayout('custom');
-        $layout1->addSelect('equipment_id', $equips)->setCaption('備品名')->setValue($equipment_id);
         $layout1->addSelect('type', $types)->setCaption('使用用途')->setValue($type);
         $layout1->addTextBox('quantity')->setCaption('数量')->setValue($quantity)->setClass('shortbox');
 

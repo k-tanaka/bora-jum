@@ -76,12 +76,9 @@ Class UsageTypesController extends Controller
      */
     public function create()
     {
-        Loader::loadLibrary('ValidatorEx');
+        $this->validator->setRules($this->_valid_rules);
 
-        $validator = new ValidatorEx();
-        $validator->setRules($this->_valid_rules);
-
-        $valid = $validator->validate($this->post);
+        $valid = $this->validator->validate($this->post);
 
         if ($valid) {
             $this->model('UsageTypes')->addType($this->post);
@@ -92,7 +89,7 @@ Class UsageTypesController extends Controller
         $this->view->setTemplate('add');
 
         $this->view->page_title = '使用用途登録';
-        $this->view->errors = $validator->getError();
+        $this->view->errors = $this->validator->getError();
         $this->view->form = $this->_getForm($this->post);
     }
     //}}}
@@ -124,12 +121,9 @@ Class UsageTypesController extends Controller
      */
     public function update()
     {
-        Loader::loadLibrary('ValidatorEx');
+        $this->validator->setRules($this->_valid_rules);
 
-        $validator = new ValidatorEx();
-        $validator->setRules($this->_valid_rules);
-
-        $valid = $validator->validate($this->post);
+        $valid = $this->validator->validate($this->post);
 
         if ($valid) {
             $this->model('UsageTypes')->updateType($this->post);
@@ -140,7 +134,7 @@ Class UsageTypesController extends Controller
         $this->view->setTemplate('edit');
 
         $this->view->page_title = '使用用途変更';
-        $this->view->errors = $validator->getError();
+        $this->view->errors = $this->validator->getError();
         $this->view->form = $this->_getForm($this->post, false);
     }
     //}}}

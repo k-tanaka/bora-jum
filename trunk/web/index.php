@@ -21,6 +21,9 @@ PathManager::setSystemRoot(SITE_PATH);
 PathManager::setHtdocsDirectory(SITE_PATH . '/web');
 
 // Execute dispatch process.
+require_once SITE_PATH . '/library/validator_ex.php';
+
 $dispatcher = new Dispatcher();
+$dispatcher->setValidatorClass('ValidatorEx');
 $dispatcher->setAppEnv(getenv('APP_ENV'));
 $dispatcher->dispatch();

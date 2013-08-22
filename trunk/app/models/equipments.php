@@ -162,5 +162,21 @@ Class Equipments extends Model
         $reuslt = $this->delete()->where('id', $id)->execute();
     }
     //}}}
+
+    /**{{{ getQuantity()
+     *
+     * id を指定して数量を取得
+     *
+     * @access  public
+     * @param   int     $id
+     * @return  int
+     */
+    public function getQuantity($id)
+    {
+        $equipment = $this->getEquipment($id);
+
+        return $equipment['quantity'];
+    }
+    //}}}
 }
 ?>

@@ -62,12 +62,10 @@
         <ul class="toggle">
             <li class="icn_new_article"><a href="/equips/add/">備品登録</a></li>
             <li class="icn_categories"><a href="/equips/">備品一覧</a></li>
-            <li class="icn_tags"><a href="/equip_types/">備品種別一覧</a></li>
         </ul>
-        <h3>使用状況管理</h3>
+        <h3>種別管理</h3>
         <ul class="toggle">
-            <li class="icn_new_article"><a href="/usages/add/">使用状況登録</a></li>
-            <li class="icn_categories"><a href="/usages/">使用状況一覧</a></li>
+            <li class="icn_tags"><a href="/equip_types/">備品種別一覧</a></li>
             <li class="icn_tags"><a href="/usage_types/">使用用途一覧</a></li>
         </ul>
         <footer>

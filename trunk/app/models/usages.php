@@ -45,6 +45,25 @@ Class Usages extends Model
        return $row; 
     }
     //}}}
+    /**{{{ getUsagesByEquipmentId()
+     *
+     * equipment_id を指定してレコードを取得
+     *
+     * @access  public
+     * @param   (none)
+     * @return  array
+     * @author  k-tanaka@netcombb.co.jp
+     */
+    public function getUsagesByEquipmentId($equipment_id)
+    {
+        $select = $this->select();
+        $select->where('equipment_id', $equipment_id);
+        $select->order('id ASC');
+        $rows = $select->fetchAll();
+
+        return $rows;
+    }
+    //}}}
     /**{{{ countUsages()
      *
      * レコード数をカウントする
@@ -135,6 +154,49 @@ Class Usages extends Model
     public function deleteUsage($id)
     {
         $reuslt = $this->delete()->where('id', $id)->execute();
+    }
+    //}}}
+    /**{{{ deleteUsagesByEquipmentId()
+     *
+     * equipment_id を指定してレコードを削除する
+     *
+     * @access  public
+     * @param   int     $id
+     * @return  void
+     * @author  k-tanaka@netcombb.co.jp
+     */
+    public function deleteUsagesByEquipmentId($equipment_id)
+    {
+        $reuslt = $this->delete()->where('equipment_id', $equipment_id)->execute();
+    }
+    //}}}
+
+    /**{{{ getTotalQuantity()
+     *
+     * 指定した equipment_id の数量の合計数を取得
+     * 但し、第2引数が渡された場合は id のレコードは集計対象外とする
+     *
+     * @access  public
+     * @param   int     $equipment_id
+     * @param   int     $id
+     * @return  int
+     */
+    public function getTotalQuantity($equipment_id, $id = null)
+    {
+        $select = $this->select();
+        $select->where('equipment_id', $equipment_id);
+        if (!is_null($id)) {
+            $select->whereNot('id', $id);
+        }
+        $select->order('id ASC');
+        $rows = $select->fetchAll();
+
+        $total = 0;
+        foreach ($rows as $usage) {
+            $total += $usage['quantity'];
+        }
+
+        return $total;
     }
     //}}}
 }

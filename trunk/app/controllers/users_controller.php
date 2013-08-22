@@ -88,12 +88,9 @@ Class UsersController extends Controller
      */
     public function create()
     {
-        Loader::loadLibrary('ValidatorEx');
+        $this->validator->setRules($this->_valid_rules);
 
-        $validator = new ValidatorEx();
-        $validator->setRules($this->_valid_rules);
-
-        $valid = $validator->validate($this->post);
+        $valid = $this->validator->validate($this->post);
 
         if ($valid) {
             $this->model('Users')->addUser($this->post);
@@ -104,7 +101,7 @@ Class UsersController extends Controller
         $this->view->setTemplate('add');
 
         $this->view->page_title = 'ユーザ登録';
-        $this->view->errors = $validator->getError();
+        $this->view->errors = $this->validator->getError();
         $this->view->form = $this->_getForm($this->post);
     }
     //}}}
@@ -136,14 +133,12 @@ Class UsersController extends Controller
      */
     public function update()
     {
-        Loader::loadLibrary('ValidatorEx');
-
-        $validator = new ValidatorEx();
         unset($this->_valid_rules['loginid'][3]);
         unset($this->_valid_rules['password']);
-        $validator->setRules($this->_valid_rules);
 
-        $valid = $validator->validate($this->post);
+        $this->validator->setRules($this->_valid_rules);
+
+        $valid = $this->validator->validate($this->post);
 
         if ($valid) {
             $this->model('Users')->updateUser($this->post);
@@ -154,7 +149,7 @@ Class UsersController extends Controller
         $this->view->setTemplate('edit');
 
         $this->view->page_title = 'ユーザ変更';
-        $this->view->errors = $validator->getError();
+        $this->view->errors = $this->validator->getError();
         $this->view->form = $this->_getForm($this->post, false);
     }
     //}}}
@@ -186,15 +181,12 @@ Class UsersController extends Controller
      */
     public function updatePassword()
     {
-        Loader::loadLibrary('ValidatorEx');
-
-        $validator = new ValidatorEx();
-
         unset($this->_valid_rules['loginid']);
         unset($this->_valid_rules['name']);
-        $validator->setRules($this->_valid_rules);
 
-        $valid = $validator->validate($this->post);
+        $this->validator->setRules($this->_valid_rules);
+
+        $valid = $this->validator->validate($this->post);
 
         if ($valid) {
             $this->model('Users')->updatePassword($this->post);
@@ -206,7 +198,7 @@ Class UsersController extends Controller
 
         $this->view->page_title = 'パスワード変更';
         $this->view->user = $this->model('Users')->getUser($this->params['id']);
-        $this->view->errors = $validator->getError();
+        $this->view->errors = $this->validator->getError();
         $this->view->form = $this->_getPasswordForm($this->post, false);
     }
     //}}}

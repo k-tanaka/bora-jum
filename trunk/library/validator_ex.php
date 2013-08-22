@@ -34,6 +34,7 @@ Class ValidatorEx extends Validator
         self::$_messages['loginid']  = '無効な文字列が入力されました';
         self::$_messages['loginid_duplicate']  = '同じログインIDが存在します';
         self::$_messages['password'] = '無効な文字列が入力されました';
+        self::$_messages['usage_quantity'] = '総数よりも多くの使用数が入力されました';
     }
     //}}}
 
@@ -46,7 +47,7 @@ Class ValidatorEx extends Validator
      * @return  bool
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function loginid($value)
+    public function loginid($value, $options)
     {
         if (!preg_match('/^[a-zA-Z]+[a-zA-Z0-9\-_]+[a-zA-Z0-9]$/', $value)) {
             return false;
@@ -63,7 +64,7 @@ Class ValidatorEx extends Validator
      * @return  bool
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function loginidDuplicate($value)
+    public function loginidDuplicate($value, $options)
     {
         $Users = new Users();
 
@@ -82,9 +83,26 @@ Class ValidatorEx extends Validator
      * @return  bool
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function password($value)
+    public function password($value, $options)
     {
         if (!preg_match('/^[a-zA-Z][a-zA-Z0-9\-_;@!"#\$%&\']+$/', $value)) {
+            return false;
+        }
+        return true;
+    }
+    //}}}
+    /**{{{ usageQuantity()
+     *
+     * 使用状況の個数バリデーション
+     *
+     * @access  public
+     * @param   string  $value
+     * @return  bool
+     * @author  k-tanaka@netcombb.co.jp
+     */
+    public function usageQuantity($value, $options)
+    {
+        if ($options['all'] < ($options['total'] + $value)) {
             return false;
         }
         return true;

@@ -57,6 +57,24 @@ Class EquipsController extends Controller
         $this->view->type_list  = $this->model('EquipmentTypes')->getTypeList();
     }
     //}}}
+    /**{{{ view()
+     *
+     * 備品詳細
+     *
+     * @access  public
+     * @param   (none)
+     * @return  void
+     * @author  k-tanaka@netcombb.co.jp
+     */
+    public function view()
+    {
+        $this->view->equipment  = $this->model('Equipments')->getEquipment($this->params['id']);
+        $this->view->type       = $this->model('EquipmentTypes')->getType($this->view->equipment['type']);
+        $this->view->usages     = $this->model('Usages')->getUsagesByEquipmentId($this->params['id']);
+        $this->view->usage_type_list = $this->model('UsageTypes')->getTypeList();
+        $this->view->page_title = $this->view->equipment['name'];
+    }
+    //}}}
     /**{{{ add()
      *
      * 備品登録フォーム表示
@@ -84,12 +102,9 @@ Class EquipsController extends Controller
      */
     public function create()
     {
-        Loader::loadLibrary('ValidatorEx');
+        $this->validator->setRules($this->_valid_rules);
 
-        $validator = new ValidatorEx();
-        $validator->setRules($this->_valid_rules);
-
-        $valid = $validator->validate($this->post);
+        $valid = $this->validator->validate($this->post);
 
         if ($valid) {
             $this->model('Equipments')->addEquipment($this->post);
@@ -100,7 +115,7 @@ Class EquipsController extends Controller
         $this->view->setTemplate('add');
 
         $this->view->page_title = '備品登録';
-        $this->view->errors = $validator->getError();
+        $this->view->errors = $this->validator->getError();
         $this->view->form = $this->_getForm($this->post);
     }
     //}}}
@@ -132,12 +147,9 @@ Class EquipsController extends Controller
      */
     public function update()
     {
-        Loader::loadLibrary('ValidatorEx');
+        $this->validator->setRules($this->_valid_rules);
 
-        $validator = new ValidatorEx();
-        $validator->setRules($this->_valid_rules);
-
-        $valid = $validator->validate($this->post);
+        $valid = $this->validator->validate($this->post);
 
         if ($valid) {
             $this->model('Equipments')->updateEquipment($this->post);
@@ -148,7 +160,7 @@ Class EquipsController extends Controller
         $this->view->setTemplate('edit');
 
         $this->view->page_title = '備品変更';
-        $this->view->errors = $validator->getError();
+        $this->view->errors = $this->validator->getError();
         $this->view->form = $this->_getForm($this->post, false);
     }
     //}}}
@@ -164,6 +176,8 @@ Class EquipsController extends Controller
     public function delete()
     {
         $this->model('Equipments')->deleteEquipment($this->params['id']);
+        // 使用状況を削除
+        $this->model('Usages')->deleteUsagesByEquipmentId($this->params['id']);
         $this->redirect('/' . $this->request->getController() . '/');
     }
     //}}}
