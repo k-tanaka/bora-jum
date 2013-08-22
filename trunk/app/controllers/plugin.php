@@ -9,6 +9,8 @@
 
 Class Plugin extends PluginAbstract
 {
+    // Properties
+
     /**{{{ preProcess()
      *
      * アクション実行前共通処理
@@ -20,6 +22,8 @@ Class Plugin extends PluginAbstract
      */
     public function preProcess()
     {
+        $this->checkAuthSession();
+
         $this->view->addJs('jquery-1.5.2.min.js');
         $this->view->addJs('hideshow.js');
         $this->view->addJs('jquery.tablesorter.min.js');
@@ -27,9 +31,10 @@ Class Plugin extends PluginAbstract
 
         $this->view->site_title = '備品管理';
 
-        $user_id = 1;
+        $session = new Session('auth');
+
         $Users = $this->model('Users');
-        $this->view->user_name = $Users->getUserName($user_id);
+        $this->view->user_name = $Users->getUserName($session->user_id);
 
         $this->addBreadcrumb($this->view->site_title, '/');
     }
@@ -76,6 +81,61 @@ Class Plugin extends PluginAbstract
         $this->view->breadcrumbs = $breadcrumbs;
 
         return true;
+    }
+    //}}}
+    /**{{{ setAuthSession()
+     *
+     * セッションにログイン情報をセット
+     *
+     * @access  public
+     * @param   int     $user_id
+     * @return  void
+     */
+    public function setAuthSession($user_id)
+    {
+        $session = new Session('auth');
+        $session->auth = true;
+        $session->user_id = $user_id;
+        $session->ref = null;
+    }
+    //}}}
+    /**{{{ clearAuthSession()
+     *
+     * セッションからログイン情報をクリア
+     *
+     * @access  public
+     * @param   (none)
+     * @return  void
+     */
+    public function clearAuthSession()
+    {
+        $session = new Session('auth');
+        $session->auth = false;
+        $session->user_id = '';
+    }
+    //}}}
+    /**{{{ checkAuthSession()
+     *
+     * セッションのログイン情報をチェック
+     *
+     * @access  public
+     * @param   (none)
+     * @return  bool
+     */
+    public function checkAuthSession()
+    {
+        $session = new Session('auth');
+
+        if ($this->request->getController() === 'auth' && $this->request->getAction() !== 'logout') {
+            if ($session->auth && preg_match('/^[1-9]+[0-9]*$/', $session->user_id)) {
+                $this->redirect('/');
+            }
+        }
+        else {
+            if (!$session->auth || !preg_match('/^[1-9]+[0-9]*$/', $session->user_id)) {
+                $this->redirect('/login/');
+            }
+        }
     }
     //}}}
 }

@@ -237,5 +237,30 @@ Class Users extends Model
         $reuslt = $this->delete()->where('id', $id)->execute();
     }
     //}}}
+
+    /**{{{ auth
+     *
+     * ログイン認証
+     *
+     * @access  public
+     * @param   string  $loginid
+     * @param   string  $password
+     * @return  int / false
+     */
+    public function auth($loginid, $password)
+    {
+        $select = $this->select();
+        $select->where('loginid', $loginid);
+        $select->where('password', hash('sha512', $password));
+        $row = $select->fetchRow();
+
+        if (count($row) > 0) {
+            return $row['id'];
+        }
+        else {
+            return false;
+        }
+    }
+    //}}}
 }
 ?>

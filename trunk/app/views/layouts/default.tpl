@@ -25,7 +25,7 @@
         <hgroup>
             <h1 class="site_title"><a href="/">{$site_title}</a></h1>
             <h2 class="section_title">{$section_title}</h2>
-            <div class="btn_view_site"><a href="">ログアウト</a></div>
+            <div class="btn_view_site"><a href="/logout/">ログアウト</a></div>
         </hgroup>
     </header> <!-- end of header bar -->
 
