@@ -210,8 +210,12 @@ outline: none;
 background: url(../images/sidebar_divider.png) repeat-x;
 display: block;
 width: 100%;
-height: 2px;}
+height: 2px;
+}
 
+#sidebar .dummy-container {
+    min-height: 400px;
+}
 
 /* Search */
 
