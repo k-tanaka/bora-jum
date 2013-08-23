@@ -40,7 +40,7 @@ Class AuthController extends Controller
 
         $session = new Session('auth');
 
-        if (is_null($sesssion->ref)) {
+        if (is_null($session->ref)) {
             $session->ref = '/';
         }
 
