@@ -29,7 +29,7 @@ Class Plugin extends PluginAbstract
         $this->view->addJs('jquery.tablesorter.min.js');
         $this->view->addJs('jquery.equalHeight.js');
 
-        $this->view->site_title = '備品管理';
+        $this->view->site_title = 'bora-jum';
 
         $session = new Session('auth');
 

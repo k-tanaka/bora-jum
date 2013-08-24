@@ -68,6 +68,7 @@ Class EquipTypesController extends Controller
 
         $this->view->page_title = $this->view->equipment_type['name'];
         $this->view->child_types = $this->model('EquipmentTypes')->getTypesByParentId($this->params['id']);
+        $this->view->options = $this->model('EquipmentOptions')->getOptionsByEquipmentTypeId($this->params['id']);
     }
     //}}}
     /**{{{ add()
