@@ -119,10 +119,10 @@ Class Usages extends Model
     public function updateUsage($datas)
     {
         $vals = array();
-        $user = $this->getUsage($datas['id']);
+        $usage = $this->getUsage($datas['id']);
 
         foreach ($datas as $key => $val) {
-            if (isset($user[$key]) && $val !== $user[$key]) {
+            if (isset($usage[$key]) && $val !== $usage[$key]) {
                 $vals[$key] = $val;
             }
         }

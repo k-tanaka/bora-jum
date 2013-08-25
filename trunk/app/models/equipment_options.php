@@ -142,10 +142,10 @@ Class EquipmentOptions extends Model
     public function updateOption($datas)
     {
         $vals = array();
-        $user = $this->getOption($datas['id']);
+        $option = $this->getOption($datas['id']);
 
         foreach ($datas as $key => $val) {
-            if (isset($user[$key]) && $val !== $user[$key]) {
+            if (isset($option[$key]) && $val !== $option[$key]) {
                 $vals[$key] = $val;
             }
         }

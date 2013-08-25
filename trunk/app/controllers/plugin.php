@@ -28,6 +28,7 @@ Class Plugin extends PluginAbstract
         $this->view->addJs('hideshow.js');
         $this->view->addJs('jquery.tablesorter.min.js');
         $this->view->addJs('jquery.equalHeight.js');
+        $this->view->addJs('purl.js');
 
         $this->view->site_title = 'bora-jum';
 

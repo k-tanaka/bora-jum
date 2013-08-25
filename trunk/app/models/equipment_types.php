@@ -171,10 +171,10 @@ Class EquipmentTypes extends Model
     public function updateType($datas)
     {
         $vals = array();
-        $user = $this->getType($datas['id']);
+        $type = $this->getType($datas['id']);
 
         foreach ($datas as $key => $val) {
-            if (isset($user[$key]) && $val !== $user[$key]) {
+            if (isset($type[$key]) && $val !== $type[$key]) {
                 $vals[$key] = $val;
             }
         }

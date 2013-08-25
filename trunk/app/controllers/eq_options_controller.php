@@ -44,9 +44,37 @@ Class EqOptionsController extends Controller
      */
     public function index()
     {
-        $this->view->page_title = '備品オプション一覧';
+    }
+    //}}}
+    /**{{{ type()
+     *
+     * equipment_type_id を指定した備品オプション一覧 
+     *
+     * @access  public
+     * @param   (none)
+     * @return  void
+     * @author  k-tanaka@netcombb.co.jp
+     */
+    public function type()
+    {
+        $equip_id = $this->params['equipment_id'];
 
-        $this->view->types = $this->model('EquipmentOptions')->getOptions();
+        $datas = $this->model('EquipmentOptions')->getOptionsByEquipmentTypeId($this->params['equipment_type_id']);
+
+        foreach ($datas as $key => $data) {
+            if ($equip_id > 0) {
+                $params = array(
+                        'equipment_id' => $equip_id,
+                        'equipment_option_id' => $data['id'],
+                        );
+                $datas[$key]['value'] = $this->model('EquipmentOptionDatas')->getOptionDataValue($params);
+            }
+            else {
+                $datas[$key]['value'] = '';
+            }
+        }
+
+        return $this->response->json($datas);
     }
     //}}}
     /**{{{ add()

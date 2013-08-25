@@ -1,15 +1,15 @@
 <?php
 /**
- * equipmentsテーブルモデルクラス
+ * equipment_option_datasテーブルモデルクラス
  *
  * @package     bora-jum
  * @author      Original Author <k-tanaka@netcombb.co.jp>
  * @copyright   Copyright (c) 2013 NetComBB
  */
 
-Class Equipments extends Model
+Class EquipmentOptionDatas extends Model
 {
-    /**{{{ getEquipments()
+    /**{{{ getOptionDatas()
      *
      * すべてのレコードを取得
      *
@@ -18,7 +18,7 @@ Class Equipments extends Model
      * @return  array
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function getEquipments()
+    public function getOptionDatas()
     {
         $select = $this->select();
         $select->order('id ASC');
@@ -27,7 +27,7 @@ Class Equipments extends Model
         return $rows;
     }
     //}}}
-    /**{{{ getEquipment()
+    /**{{{ getOptionData()
      *
      * IDを指定してレコードを取得
      *
@@ -36,7 +36,7 @@ Class Equipments extends Model
      * @return  array
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function getEquipment($id)
+    public function getOptionData($id)
     {
         $select = $this->select();
         $select->where('id', $id);
@@ -45,32 +45,45 @@ Class Equipments extends Model
        return $row; 
     }
     //}}}
-    /**{{{ getEquipmentList()
+    /**{{{ getOptionDataAtParams()
      *
-     * 備品名のリストを取得
+     * 検索データを指定してレコードを取得
      *
      * @access  public
-     * @param   (none)
+     * @param   array   $params
      * @return  array
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function getEquipmentList()
+    public function getOptionDataAtParams($params)
     {
         $select = $this->select();
-        $select->fields('id, name');
-        $select->order('id ASC');
-        $rows = $select->fetchAll();
-
-        $ret = array();
-
-        foreach ($rows as $row) {
-            $ret[$row['id']] = $row['name'];
+        foreach ($params as $key => $val) {
+            $select->where($key, $val);
         }
+        $row = $select->fetchRow();
 
-        return $ret;
+       return $row; 
     }
     //}}}
-    /**{{{ countEquipments()
+    /**{{{ getOptionDataValue()
+     *
+     * オプション項目データ(.value)を取得
+     *
+     * @access  public
+     * @param   array   $params
+     * @return  array
+     * @author  k-tanaka@netcombb.co.jp
+     */
+    public function getOptionDataValue($params)
+    {
+        $row = $this->getOptionDataAtParams($params);
+
+        $value = ($row) ? $row['value'] : '';
+
+       return $value; 
+    }
+    //}}}
+    /**{{{ countOptionDatas()
      *
      * レコード数をカウントする
      *
@@ -79,7 +92,7 @@ Class Equipments extends Model
      * @return  int
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function countEquipments()
+    public function countOptionDatas()
     {
         $select = $this->select();
         $select->order('id ASC');
@@ -88,7 +101,7 @@ Class Equipments extends Model
         return $count;
     }
     //}}}
-    /**{{{ addEquipment()
+    /**{{{ addOptionData()
      *
      * レコードを追加する
      *
@@ -97,24 +110,23 @@ Class Equipments extends Model
      * @return  void
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function addEquipment($datas)
+    public function addOptionData($datas)
     {
         $id = $this->select()->fetchMax('id');
 
         $insert = $this->insert();
 
-        $insert->values('name', $datas['name']);
-        $insert->values('type', $datas['type']);
-        $insert->values('quantity', $datas['quantity']);
+        $insert->values('id', $id + 1);
+        $insert->values('equipment_id', $datas['equipment_id']);
+        $insert->values('equipment_option_id', $datas['equipment_option_id']);
+        $insert->values('value', $datas['value']);
         $insert->values('created_at', date('Y/m/d H:i:s', time()));
         $insert->values('updated_at', date('Y/m/d H:i:s', time()));
 
         $result = $insert->execute();
-
-        return $result;
     }
     //}}}
-    /**{{{ updateEquipment()
+    /**{{{ updateOptionData()
      *
      * レコードを変更する
      *
@@ -123,33 +135,38 @@ Class Equipments extends Model
      * @return  void
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function updateEquipment($datas)
+    public function updateOptionData($datas)
     {
         $vals = array();
-        $equipment = $this->getEquipment($datas['id']);
+        $params = array(
+                'equipment_id' => $datas['equipment_id'],
+                'equipment_option_id' => $datas['equipment_option_id']
+                );
+        $option_data = $this->getOptionDataAtParams($params);
 
         foreach ($datas as $key => $val) {
-            if (isset($equipment[$key]) && $val !== $equipment[$key]) {
+            if (isset($option_data[$key]) && $val !== $option_data[$key]) {
                 $vals[$key] = $val;
             }
         }
+        var_dump($option_data);
 
         if (count($vals) === 0) {
             return true;
-        }
+       }
 
         $vals['updated_at'] = date('Y/m/d H:i:s', time());
 
         $update = $this->update();
 
         $update->values($vals);
-        $update->where('id', $datas['id']);
+        $update->where('id', $option_data['id']);
         $update->execute();
 
         return true;
     }
     //}}}
-    /**{{{ deleteEquipment()
+    /**{{{ deleteOptionData()
      *
      * レコードを削除する
      *
@@ -158,25 +175,23 @@ Class Equipments extends Model
      * @return  void
      * @author  k-tanaka@netcombb.co.jp
      */
-    public function deleteEquipment($id)
+    public function deleteOptionData($id)
     {
         $reuslt = $this->delete()->where('id', $id)->execute();
     }
     //}}}
-
-    /**{{{ getQuantity()
+    /**{{{ deleteOptionDataByEquipmentId()
      *
-     * id を指定して数量を取得
+     * レコードを削除する
      *
      * @access  public
-     * @param   int     $id
-     * @return  int
+     * @param   int     $equip_id
+     * @return  void
+     * @author  k-tanaka@netcombb.co.jp
      */
-    public function getQuantity($id)
+    public function deleteOptionDataByEquipmentId($equip_id)
     {
-        $equipment = $this->getEquipment($id);
-
-        return $equipment['quantity'];
+        $this->delete()->where('equipment_id', $equip_id)->execute();
     }
     //}}}
 }

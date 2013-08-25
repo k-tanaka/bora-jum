@@ -764,6 +764,11 @@ margin: -5px 0 5px 0;
 text-transform: uppercase;
 }
 
+fieldset label .required {
+color: #f00;
+font-weight: bold;
+}
+
 fieldset input[type=text],
 fieldset input[type=password] {
 -webkit-border-radius: 5px;

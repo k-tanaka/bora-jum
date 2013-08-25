@@ -107,7 +107,11 @@ Class EquipsController extends Controller
         $valid = $this->validator->validate($this->post);
 
         if ($valid) {
-            $this->model('Equipments')->addEquipment($this->post);
+            $id = $this->model('Equipments')->addEquipment($this->post);
+            $options = $this->_getOptionDatas(array_merge(array('id' => $id), $this->post));
+            foreach ($options as $option) {
+                $this->model('EquipmentOptionDatas')->addOptionData($option);
+            }
 
             $this->redirect('/' . $this->request->getController() . '/');
         }
@@ -153,6 +157,10 @@ Class EquipsController extends Controller
 
         if ($valid) {
             $this->model('Equipments')->updateEquipment($this->post);
+            $options = $this->_getOptionDatas($this->post);
+            foreach ($options as $option) {
+                $this->model('EquipmentOptionDatas')->updateOptionData($option);
+            }
 
             $this->redirect('/' . $this->request->getController() . '/');
         }
@@ -178,6 +186,9 @@ Class EquipsController extends Controller
         $this->model('Equipments')->deleteEquipment($this->params['id']);
         // 使用状況を削除
         $this->model('Usages')->deleteUsagesByEquipmentId($this->params['id']);
+        // オプションデータを削除
+        $this->model('EquipmentOptionDatas')->deleteOptionDataByEquipmentId($this->params['id']);
+
         $this->redirect('/' . $this->request->getController() . '/');
     }
     //}}}
@@ -193,6 +204,7 @@ Class EquipsController extends Controller
      */
     private function _getForm($vals = array(), $is_new = true)
     {
+        Loader::load('HtmlElement', 'html');
         Loader::load('HtmlForm', 'html');
         Loader::loadLibrary('FormLayoutCustom');
         Loader::loadLibrary('FormLayoutCustomSubmit');
@@ -201,20 +213,39 @@ Class EquipsController extends Controller
         $type       = (isset($vals['type'])) ? $vals['type'] : 0;
         $quantity   = (isset($vals['quantity'])) ? $vals['quantity'] : 0;
 
-        $types = $this->model('EquipmentTypes')->getTypeList();
+        $types = array_merge(array(0 => ''), $this->model('EquipmentTypes')->getTypeList());
+
+        $required_html = HtmlElement::create('span')
+            ->setText('*')
+            ->setClass('required')
+            ->getHtml();
 
         $form = new HtmlForm();
         if ($is_new) {
             $form->setAction('/equips/create/');
+            $onchange = 'changeOptions(this.value, 0)';
         }
         else {
             $form->setAction('/equips/update/' . $vals['id']);
-            $form->addHidden('id')->setValue($vals['id']);
+            $form->addHidden('id')->setValue($vals['id'])->setId('id');
+            $onchange = 'changeOptions(this.value, ' . $vals['id'] . ')';
         }
         $layout1 = $form->addLayout('custom');
-        $layout1->addTextBox('name')->setCaption('備品名')->setValue($name);
-        $layout1->addSelect('type', $types)->setCaption('種別')->setValue($type)->setClass('shortbox');
-        $layout1->addTextBox('quantity')->setCaption('数量')->setValue($quantity)->setClass('shortbox');
+        $layout1->addTextBox('name')
+            ->setCaption('備品名 ' . $required_html)
+            ->setValue($name)
+            ->setId('name');
+        $layout1->addSelect('type', $types)
+            ->setCaption('種別 ' . $required_html)
+            ->setValue($type)
+            ->setClass('shortbox')
+            ->setOnchange($onchange)
+            ->setId('type');
+        $layout1->addTextBox('quantity')
+            ->setCaption('数量 ' . $required_html)
+            ->setValue($quantity)
+            ->setClass('shortbox')
+            ->setId('quantity');
 
         $layout2 = $form->addLayout('custom_submit');
         if ($is_new) {
@@ -226,6 +257,33 @@ Class EquipsController extends Controller
         $layout2->addReset('reset', 'リセット');
 
         return $form;
+    }
+    //}}}
+    /**{{{ _getOptionDatas()
+     *
+     * オプション項目のパラメータを取得し整形
+     *
+     * @access  private
+     * @aram    array   $params
+     * @return  array
+     */
+    private function _getOptionDatas($params)
+    {
+        $options = array();
+
+        $equip_id = $params['id'];
+
+        foreach ($params as $key => $val) {
+            if (preg_match('/^option-([1-9]+[0-9]*)$/', $key, $match)) {
+                $options[] = array(
+                        'equipment_id'          => $equip_id,
+                        'equipment_option_id'   => $match[1],
+                        'value'                 => $val,
+                        );
+            }
+        }
+
+        return $options;
     }
     //}}}
 }
